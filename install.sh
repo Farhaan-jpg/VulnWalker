@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # VulnWalker Installer for Kali Linux
@@ -14,10 +13,11 @@ echo "[*] Updating apt cache..."
 apt-get update -y
 
 echo "[*] Installing system dependencies (nmap, exploitdb)..."
-apt-get install -y nmap exploitdb python3 python3-pip
+apt-get install -y nmap exploitdb python3 python3-pip python3-rich python3-nmap python3-requests
 
-echo "[*] Installing Python dependencies..."
-pip3 install -r requirements.txt --break-system-packages
+echo "[*] Installing Python dependencies (via pip as fallback)..."
+# Using apt is preferred on Kali, but we run pip just in case specific versions are needed
+pip3 install -r requirements.txt --break-system-packages || echo "[!] Pip install failed, but apt packages should suffice."
 
 echo "[*] Fixing line endings for Linux..."
 sed -i 's/\r$//' vulnwalker.py
