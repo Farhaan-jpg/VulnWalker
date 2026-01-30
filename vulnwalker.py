@@ -12,14 +12,15 @@ console = Console()
 def main():
     parser = argparse.ArgumentParser(description="VulnWalker - Vulnerability Correlation & Exploit Assistant")
     parser.add_argument("-t", "--target", help="Target IP or Hostname", required=True)
-    parser.add_argument("-o", "--output", help="Output report filename", default="vulnwalker_report.md")
+    parser.add_argument("-o", "--output", help="Output report filename", default="vulnwalker_report.html")
+    parser.add_argument("--deep", action="store_true", help="Enable deep scan (Nmap NSE scripts)")
     
     args = parser.parse_args()
     
     console.print(Panel.fit("[bold red]VulnWalker[/bold red] - [bold white]Walking the Path of Vulnerabilities[/bold white]", subtitle="[yellow]v1.0[/yellow]"))
     
     # 1. SCANNING
-    scanner = Scanner(args.target)
+    scanner = Scanner(args.target, args.deep)
     with console.status(f"[bold cyan]Scanning {args.target}...[/bold cyan]", spinner="dots"):
         scan_results = scanner.run_scan()
     

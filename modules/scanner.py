@@ -5,21 +5,26 @@ from rich.console import Console
 console = Console()
 
 class Scanner:
-    def __init__(self, target):
+    def __init__(self, target, deep_scan=False):
         self.target = target
+        self.deep_scan = deep_scan
         self.nm = nmap.PortScanner()
         
     def run_scan(self):
         """
-        Runs nmap -sV (Service Version Detection) on the target.
+        Runs nmap -sV (and optionally --script vuln) on the target.
         Returns a list of dictionaries with service info.
         """
         try:
-            # -sV: Service Version
-            # -T4: Faster timing
-            # --open: Only show open ports
-            console.print(f"[dim]Running: nmap -sV -T4 --open {self.target}[/dim]")
-            self.nm.scan(self.target, arguments='-sV -T4 --open')
+            # Basic args
+            nm_args = '-sV -T4 --open'
+            
+            if self.deep_scan:
+                console.print(f"[bold yellow][!] Deep scan enabled. This might take a while...[/bold yellow]")
+                nm_args += ' --script vuln'
+
+            console.print(f"[dim]Running: nmap {nm_args} {self.target}[/dim]")
+            self.nm.scan(self.target, arguments=nm_args)
             
             results = []
             
@@ -34,13 +39,20 @@ class Scanner:
                         version = service.get('version', '')
                         full_name = f"{service_name} {version}".strip()
                         
+                        # Extract script output (vuln scripts)
+                        script_output = ""
+                        if 'script' in service:
+                             for script_id, output in service['script'].items():
+                                 script_output += f"\n**{script_id}**:\n```\n{output}\n```\n"
+
                         results.append({
                             'port': port,
                             'protocol': proto,
                             'name': service.get('name', 'unknown'),
                             'product': service_name,
                             'version': version,
-                            'full_name': full_name
+                            'full_name': full_name,
+                            'script_output': script_output
                         })
                         console.print(f"    - Port {port}: [bold]{full_name}[/bold]")
                         
