@@ -15,8 +15,9 @@
 ```bash
 git clone https://github.com/your-username/vulnwalker.git
 cd vulnwalker
-sudo ./install.sh
+sudo bash install.sh
 ```
+*Note: This will automatically set up a virtual environment and system dependencies.*
 
 ## Usage
 Basic scan:

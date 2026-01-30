@@ -2,9 +2,10 @@ import os
 from datetime import datetime
 
 class Reporter:
-    def __init__(self, data, filename):
+    def __init__(self, data, filename, target):
         self.data = data
         self.filename = filename
+        self.target = target
         
     def generate(self):
         """
@@ -13,6 +14,7 @@ class Reporter:
         try:
             with open(self.filename, 'w') as f:
                 f.write(f"# VulnWalker Report\n")
+                f.write(f"**Target:** {self.target}\n")
                 f.write(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
                 f.write(f"**Total Services Found:** {len(self.data)}\n\n")
                 f.write("---\n")

@@ -20,8 +20,8 @@ def main():
     
     # 1. SCANNING
     scanner = Scanner(args.target)
-    console.print(f"\n[+] Starting scan on [bold cyan]{args.target}[/bold cyan]...")
-    scan_results = scanner.run_scan()
+    with console.status(f"[bold cyan]Scanning {args.target}...[/bold cyan]", spinner="dots"):
+        scan_results = scanner.run_scan()
     
     if not scan_results:
         console.print("[bold red][!] Scan failed or no info found.[/bold red]")
@@ -36,7 +36,7 @@ def main():
     
     # 3. REPORTING
     console.print(f"\n[+] Generating report: [bold yellow]{args.output}[/bold yellow]...")
-    reporter = Reporter(analysis_results, args.output)
+    reporter = Reporter(analysis_results, args.output, args.target)
     reporter.generate()
     
     console.print("\n[bold green][*] Mission Complete![/bold green] check your report for details.")

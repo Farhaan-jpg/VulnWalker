@@ -2,6 +2,7 @@ import subprocess
 import json
 import os
 from rich.console import Console
+from rich.progress import track
 
 console = Console()
 
@@ -15,7 +16,7 @@ class Analyzer:
         """
         analyzed_data = []
 
-        for service in self.scan_results:
+        for service in track(self.scan_results, description="Correlating Exploits..."):
             full_name = service['full_name']
             if len(full_name) < 3: # Skip empty or too short names
                 continue
